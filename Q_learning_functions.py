@@ -1,4 +1,5 @@
 import math
+import random
 def softmax(list_values, T):
     sum_of_exp_values = 0
     for i in list_values:
@@ -33,3 +34,16 @@ def bellmans_update(rewards, Q_values, state, action, gamma, alpha, goal):
     error = target - Q_values[state][action]
     Q_values[state][action] = Q_values[state][action]+alpha*error
     return new_state
+
+#this function is specifically created only for 4 probabilites
+def weighted_random(probabilities):
+    random_num = round(random.random(),3)
+    cumulative = 0
+    cum_prob = [0]
+    for i in probabilities:
+        cumulative+=i
+        cum_prob+=[round(cumulative,3)]
+    cum_prob+=[random_num]
+    cum_prob.sort()
+    action = cum_prob.index(random_num)-1
+    return action
