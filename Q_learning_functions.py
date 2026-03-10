@@ -17,12 +17,19 @@ def state_updater(state, action):
     else:
         return (i-1,j)
 
-def bellmans_update(rewards, Q_values, state, action, gamma, alpha):
+def bellmans_update(rewards, Q_values, state, action, gamma, alpha, goal):
     new_state = state_updater(state,action)
-    if new_state not in rewards.keys():
+    if new_state not in Q_values:
         reward = -5
+        max_Q = 0.0
+        new_state = state
+    elif new_state == goal:
+        reward = rewards[new_state]
+        max_Q = 0.0
     else:
         reward = rewards[new_state]
-    target = reward + gamma*max(Q_values[new_state])
+        max_Q = max(Q_values[new_state])
+    target = reward + gamma*max_Q
     error = target - Q_values[state][action]
     Q_values[state][action] = Q_values[state][action]+alpha*error
+    return new_state
