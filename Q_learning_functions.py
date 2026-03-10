@@ -37,13 +37,10 @@ def bellmans_update(rewards, Q_values, state, action, gamma, alpha, goal):
 
 #this function is specifically created only for 4 probabilites
 def weighted_random(probabilities):
-    random_num = round(random.random(),3)
-    cumulative = 0
-    cum_prob = [0]
-    for i in probabilities:
-        cumulative+=i
-        cum_prob+=[round(cumulative,3)]
-    cum_prob+=[random_num]
-    cum_prob.sort()
-    action = cum_prob.index(random_num)-1
-    return action
+    random_num = random.random()
+    cumulative = 0.0
+    for i, prob in enumerate(probabilities):
+        cumulative += prob
+        if random_num < cumulative:   
+            return i
+    return len(probabilities) - 1
