@@ -9,7 +9,7 @@ gamma          = 0.9
 T              = 1.0
 T_min          = 0.01
 T_decay        = 0.99
-total_episodes = 500
+total_episodes = 300
 
 action = None
 maze_R = Q.json_load("maze_R.json")
@@ -24,6 +24,12 @@ for j in range(total_episodes):
         next_state = Q.bellmans_update(maze_R,Q_value,state,action,gamma,alpha,goal)
         state = next_state
         i+=1
+    if state == goal:
+        outcome = f"GOAL REACHED in {i} steps!"
+    else:
+        outcome = f"failed - used all {i} steps"
+    if j % 25 == 0:
+        print(f"Episode {j:>4} | T: {T:.4f} | {outcome}")
     Q.json_save(Q_value, "maze_Q.json")
     T = max(T*T_decay, T_min)
-Q.json_save(Q_value, "master_Q_value.json")
+Q.json_save(Q_value, "master_Q_value_test1.json")
