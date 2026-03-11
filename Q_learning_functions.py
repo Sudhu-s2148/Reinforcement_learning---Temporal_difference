@@ -4,6 +4,7 @@ import json
 import ast
 
 def softmax(list_values, T):
+    T = max(T,.01)
     sum_of_exp_values = 0
     for i in list_values:
         sum_of_exp_values += math.exp(i/T)
@@ -13,9 +14,9 @@ def softmax(list_values, T):
 def state_updater(state, action):
     i, j= state
     if action == 0:
-        return (i, j+1)
-    elif action == 1:
         return (i, j-1)
+    elif action == 1:
+        return (i, j+1)
     elif action == 2:
         return (i+1, j)
     else:
