@@ -1,5 +1,8 @@
 import math
 import random
+import json
+import ast
+
 def softmax(list_values, T):
     sum_of_exp_values = 0
     for i in list_values:
@@ -41,6 +44,17 @@ def weighted_random(probabilities):
     cumulative = 0.0
     for i, prob in enumerate(probabilities):
         cumulative += prob
-        if random_num < cumulative:   
+        if random_num < cumulative:
             return i
     return len(probabilities) - 1
+
+#saving and retreiving Q_value data from a json file
+def json_save(data, filename):
+    data_serializable = {str(k): v for k, v in data.items()}
+    with open(filename, "w") as fh:
+        json.dump(data_serializable, fh)
+def json_load(filename):
+    with open(filename, "r") as fh:
+        loaded = json.load(fh)
+        new_data = {ast.literal_eval(k): v for k, v in loaded.items()}
+    return new_data
