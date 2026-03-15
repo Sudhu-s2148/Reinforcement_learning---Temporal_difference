@@ -1,7 +1,7 @@
 import Q_learning_functions as Q
 #setting up my maze
 rows,cols = 4,5
-walls = {(3,3), (3,4)}
+walls = {(3,3),(3,4)}
 goal  = (5,4)
 start = (1,4)
 
