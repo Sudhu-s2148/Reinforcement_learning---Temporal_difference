@@ -2,13 +2,24 @@ import math
 import random
 import json
 import ast
+import math
 
 def softmax(list_values, T):
-    T = max(T,.01)
-    sum_of_exp_values = 0
-    for i in list_values:
-        sum_of_exp_values += math.exp(i/T)
-    probabilities = [round(math.exp(i/T)/sum_of_exp_values,3) for i in list_values]
+    # Safeguard T to avoid division by zero or extreme sensitivity
+    T = max(T, 0.05)
+
+    # 1. Scale values by temperature
+    scaled_values = [i / T for i in list_values]
+
+    # 2. Subtract the maximum value (The Stability Trick)
+    # This prevents math.exp from receiving huge positive numbers
+    max_val = max(scaled_values)
+    exp_values = [math.exp(v - max_val) for v in scaled_values]
+
+    # 3. Calculate sum and normalize
+    sum_of_exp_values = sum(exp_values)
+    probabilities = [round(ev / sum_of_exp_values, 3) for ev in exp_values]
+
     return probabilities
 
 def state_updater(state, action):
