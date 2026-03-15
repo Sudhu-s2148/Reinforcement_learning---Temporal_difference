@@ -151,8 +151,6 @@ def main():
                                     path_history, start, goal, cols, rows,
                                     font_large, font_small, tick)
                 clock.tick(FPS)
-        if state == goal:
-            print("goal reached at episode",episode)
         episode += 1
         T = max(T * T_decay, T_min)
         if episode % 50 == 0:
