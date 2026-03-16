@@ -2,9 +2,9 @@ import pygame
 import Q_learning_functions as Q
 import time
 import math
-import Q_value_Reward_50x50_rooms as values
+import Q_value_Reward_20x20_rooms as values
 # --- Configuration ---
-TILE_SIZE      = 18
+TILE_SIZE      = values.tile_size
 FPS            = 60
 EPISODE_STEP   = 200
 TOTAL_EPISODES = 4000

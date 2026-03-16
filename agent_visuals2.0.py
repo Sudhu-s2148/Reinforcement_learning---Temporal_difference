@@ -3,13 +3,13 @@ import Q_learning_functions as Q
 import time
 import math
 import random
-
+import Q_value_Reward_20x20_rooms as values
 # --- Configuration ---
 TILE_SIZE = 30
 FPS = 60 # Increased for smoothness
 EPISODE_STEP = 500
-TOTAL_EPISODES = 7500
-TOTAL_MOVES = 800
+TOTAL_EPISODES = 2000
+TOTAL_MOVES = 500
 
 # --- Palette ---
 BG          = (13,  13,  18)
@@ -50,7 +50,7 @@ def create_static_maze(maze_R, cols, rows, goal, font_small):
             draw_rounded_rect(surf, GOAL_FILL, rect, 8, GOAL_EDGE, 1)
             lbl = font_small.render("G", True, (10, 60, 30))
             surf.blit(lbl, lbl.get_rect(center=rect.center))
-        elif reward == -20:
+        elif reward == values.R_wall:
             draw_rounded_rect(surf, WALL, rect, 6, WALL_EDGE, 1)
         else:
             draw_rounded_rect(surf, CELL, rect, 6, CELL_EDGE, 1)
@@ -104,8 +104,8 @@ def main():
     pygame.init()
     maze_R = Q.json_load("maze_R.json")
     cols, rows = max(k[0] for k in maze_R.keys()), max(k[1] for k in maze_R.keys())
-    start, goal = (1,1), (20,20)
-    gamma, alpha = 0.99, 0.2
+    start, goal = values.start, values.goal
+    gamma, alpha = values.gamma, values.alpha
 
     screen = pygame.display.set_mode((cols * TILE_SIZE, rows * TILE_SIZE + HUD_H))
     clock = pygame.time.Clock()
@@ -116,7 +116,7 @@ def main():
     static_maze = create_static_maze(maze_R, cols, rows, goal, font_small)
     
     maze_Q = Q.json_load("maze_Q.json")
-    T, T_decay, T_min = 5.0, 0.9999 , 0.01
+    T, T_decay, T_min = values.T, values.T_decay , values.T_min
     episode, tick, running = 0, 0, True
 
     while running and episode < TOTAL_EPISODES:
@@ -131,11 +131,6 @@ def main():
 
         while state != goal and moves < TOTAL_MOVES:
             epsilon = max(0.01, 0.2 * (0.998 ** episode))
-            '''if len(path_history) > 4:
-                # Detects A-B-A-B or A-B-C-A-B-C loops
-                if path_history[-1] == path_history[-3] or path_history[-1] == path_history[-5]:
-                    # Force a random move if we are vibrating
-                    action = random.randint(0, 3)'''
             if random.random() < epsilon:
                 action = random.randint(0, 3)
             else:
@@ -153,7 +148,10 @@ def main():
                 clock.tick(FPS)
         episode += 1
         T = max(T * T_decay, T_min)
+        if state == goal:
+            print("goal reached in ep", episode)
         if episode % 50 == 0:
+            print("completed ep", episode)
             Q.json_save(maze_Q, "maze_Q.json")
 
     pygame.quit()

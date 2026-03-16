@@ -8,7 +8,7 @@ alpha          = 0.1
 gamma          = 0.9
 T              = 1.0
 T_min          = 0.01
-T_decay        = 0.99
+T_decay        = 0.5
 total_episodes = 300
 
 action = None

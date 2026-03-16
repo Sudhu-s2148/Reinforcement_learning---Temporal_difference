@@ -55,3 +55,4 @@ Q.json_save(maze_Q, "maze_Q.json")
 Q.json_save(maze_R, "maze_R.json")
 gamma, alpha = 0.99, 0.2
 T, T_decay, T_min = 5.0, 0.9999 , 0.01
+tile_size = 30
