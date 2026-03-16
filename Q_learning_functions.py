@@ -3,7 +3,9 @@ import random
 import json
 import ast
 import math
-
+R_wall  = -20
+R_cell  = -1    # drop from -5 → -1, less noise in value propagation
+R_goal  = 500
 def softmax(list_values, T):
     # Safeguard T to avoid division by zero or extreme sensitivity
     T = max(T, 0.05)
@@ -22,32 +24,31 @@ def softmax(list_values, T):
 
     return probabilities
 
-def state_updater(state, action):
-    i, j= state
+def state_updater(state, action, rewards):
+    i, j = state
     if action == 0:
-        return (i, j-1)
+        new_state = (i, j-1)
     elif action == 1:
-        return (i, j+1)
+        new_state = (i, j+1)
     elif action == 2:
-        return (i+1, j)
+        new_state = (i+1, j)
     else:
-        return (i-1,j)
+        new_state = (i-1, j)
+
+    # bounce back if OOB or wall
+    if new_state not in rewards or rewards[new_state] == -20:
+        return state
+    return new_state
 
 def bellmans_update(rewards, Q_values, state, action, gamma, alpha, goal):
-    new_state = state_updater(state,action)
-    if new_state not in Q_values:
-        reward = -5
-        max_Q = 0.0
-        new_state = state
-    elif new_state == goal:
-        reward = rewards[new_state]
-        max_Q = 0.0
-    else:
-        reward = rewards[new_state]
-        max_Q = max(Q_values[new_state])
-    target = reward + gamma*max_Q
-    error = target - Q_values[state][action]
-    Q_values[state][action] = Q_values[state][action]+alpha*error
+    new_state = state_updater(state, action, rewards)
+
+    reward = rewards[new_state]
+    max_Q = 0.0 if new_state == goal else max(Q_values[new_state])
+
+    error = (reward + gamma * max_Q) - Q_values[state][action]
+    Q_values[state][action] += alpha * error
+
     return new_state
 
 #this function is specifically created only for 4 probabilites
