@@ -1,0 +1,6 @@
+gamma, alpha = 0.99, 0.2
+T, T_decay, T_min = 5.0, 0.9999 , 0.01
+R_wall = -20
+R_cell = -5
+R_goal = 500
+for all 50x50 and 20x20
